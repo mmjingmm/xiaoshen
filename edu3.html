@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>政府教育支出可视化仪表盘</title>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f7fa;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .chart-container {
+      margin-bottom: 40px;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+    }
+    #upload {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    input[type="file"] {
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .chart-title {
+      text-align: center;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>政府教育支出可视化仪表盘</h1>
+  <div id="upload">
+    <input type="file" id="fileInput" accept="application/json">
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">1. 教育支出随时间变化（折线图）</div>
+    <div id="lineChart"></div>
+  </div>
+
+  <div class="grid-container">
+    <div class="chart-container">
+      <div class="chart-title">2. 地理分布地图（可选择年份）</div>
+      <div id="mapChart"></div>
+    </div>
+    <div class="chart-container">
+      <div class="chart-title">3. 单年各国对比（柱状图）</div>
+      <div id="barChart"></div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">4. 教育支出热力图（国家 × 年份）</div>
+    <div id="heatmap"></div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">5. 多国对比雷达图（最新年份）</div>
+    <div id="radarChart"></div>
+  </div>
+
+  <script>
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          renderDashboard(data);
+        } catch (err) {
+          alert('JSON 解析失败，请检查格式。');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function renderDashboard(data) {
+      const years = Object.keys(data[0]).filter(k => k !== 'Time period');
+      const countries = data.slice(1).map(d => d['Time period']);
+
+      // 折线图
+      const lineTraces = data.slice(1).map(d => {
+        return {
+          x: years,
+          y: years.map(y => parseFloat((d[y] + '').replace(/[^\d.]/g, '')) || null),
+          name: d['Time period'],
+          type: 'scatter',
+          mode: 'lines+markers'
+        };
+      });
+      Plotly.newPlot('lineChart', lineTraces, { title: '教育支出时间序列' });
+
+      // 默认显示地图和柱状图为 2020 年
+      const defaultYear = '2020';
+      drawChoropleth(data, defaultYear);
+      drawBarChart(data, defaultYear);
+
+      // 热力图
+      const zData = data.slice(1).map(row => years.map(y => parseFloat((row[y] + '').replace(/[^\d.]/g, '')) || 0));
+      Plotly.newPlot('heatmap', [{
+        z: zData,
+        x: years,
+        y: countries,
+        type: 'heatmap',
+        colorscale: 'YlGnBu'
+      }], { title: '热力图' });
+
+      // 雷达图
+      const latestYear = years.reverse().find(y => data.some(d => parseFloat((d[y] + '').replace(/[^\d.]/g, ''))));
+      const radarCountries = data.slice(1, 6);
+      const radarTraces = radarCountries.map(d => {
+        return {
+          type: 'scatterpolar',
+          r: years.map(y => parseFloat((d[y] + '').replace(/[^\d.]/g, '')) || 0),
+          theta: years,
+          fill: 'toself',
+          name: d['Time period']
+        };
+      });
+      Plotly.newPlot('radarChart', radarTraces, { polar: { radialaxis: { visible: true } } });
+    }
+
+    function drawChoropleth(data, year) {
+      const mapData = data.slice(1).map(d => ({
+        country: d['Time period'],
+        value: parseFloat((d[year] + '').replace(/[^\d.]/g, '')) || null
+      })).filter(d => d.value !== null);
+      Plotly.newPlot('mapChart', [{
+        type: 'choropleth',
+        locations: mapData.map(d => d.country),
+        locationmode: 'country names',
+        z: mapData.map(d => d.value),
+        colorscale: 'Blues',
+        colorbar: { title: year + ' 支出比例' }
+      }], { geo: { projection: { type: 'natural earth' } } });
+    }
+
+    function drawBarChart(data, year) {
+      const sorted = data.slice(1).map(d => ({
+        country: d['Time period'],
+        value: parseFloat((d[year] + '').replace(/[^\d.]/g, '')) || null
+      })).filter(d => d.value !== null).sort((a, b) => b.value - a.value);
+
+      Plotly.newPlot('barChart', [{
+        x: sorted.map(d => d.country),
+        y: sorted.map(d => d.value),
+        type: 'bar'
+      }], { title: `${year} 各国教育支出比重` });
+    }
+  </script>
+</body>
+</html>
