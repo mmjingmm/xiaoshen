@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>教育领域收入差异可视化仪表盘</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #upload-section { margin-bottom: 20px; }
+    .chart-container { margin-bottom: 40px; }
+    .chart-title { font-weight: bold; margin: 20px 0 10px; }
+  </style>
+</head>
+<body>
+  <div id="upload-section">
+    <input type="file" id="fileInput" accept="application/json" />
+  </div>
+  
+  <div class="chart-container">
+    <div class="chart-title">1. 国家 vs 专业领域热力图</div>
+    <div id="heatmap"></div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">2. 国家领域收入柱状图</div>
+    <div id="barChart"></div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">3. 专业领域分布箱型图</div>
+    <div id="boxPlot"></div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">4. 国家高教回报雷达图</div>
+    <div id="radarChart"></div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">5. 世界地图（Choropleth Map）</div>
+    <div id="mapChart"></div>
+  </div>
+
+  <script>
+    document.getElementById('fileInput').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const jsonData = JSON.parse(e.target.result);
+          renderCharts(jsonData);
+        } catch (err) {
+          alert('无法解析 JSON 文件。请检查格式。');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function renderCharts(data) {
+      const fields = ["教育学", "艺术与人文", "社会科学、新闻和信息", "商业、行政和法律", "自然科学、数学和统计学", "信息和通信技术", "工程、制造业和建筑业", "农业、林业、渔业和兽医", "卫生和福利", "服务"];
+
+      const countries = data.map(d => d[""]);
+      const matrix = fields.map(field => data.map(d => parseFloat(d[field]) || null));
+
+      // 热力图
+      Plotly.newPlot('heatmap', [{
+        z: matrix,
+        x: countries,
+        y: fields,
+        type: 'heatmap',
+        colorscale: 'Viridis'
+      }]);
+
+      // 柱状图（默认展示第一个国家）
+      const firstCountry = data[0];
+      const barY = fields.map(field => parseFloat(firstCountry[field]) || null);
+      Plotly.newPlot('barChart', [{
+        x: fields,
+        y: barY,
+        type: 'bar'
+      }], { title: firstCountry[""] });
+
+      // 箱型图
+      const boxTraces = fields.map((field) => {
+        return {
+          y: data.map(d => parseFloat(d[field])).filter(v => !isNaN(v)),
+          name: field,
+          type: 'box'
+        };
+      });
+      Plotly.newPlot('boxPlot', boxTraces);
+
+      // 雷达图（默认展示第一个国家）
+      const radarValues = fields.map(field => parseFloat(firstCountry[field]) || 0);
+      radarValues.push(radarValues[0]);
+      const radarLabels = [...fields, fields[0]];
+      Plotly.newPlot('radarChart', [{
+        type: 'scatterpolar',
+        r: radarValues,
+        theta: radarLabels,
+        fill: 'toself',
+        name: firstCountry[""]
+      }], {
+        polar: { radialaxis: { visible: true, range: [0, Math.max(...radarValues) + 20] } }
+      });
+
+      // 地图（默认显示“工程、制造业和建筑业”）
+      const selectedField = "工程、制造业和建筑业";
+      const mapData = data.map(d => ({
+        country: d[""],
+        value: parseFloat(d[selectedField]) || null
+      })).filter(d => d.value !== null);
+
+      Plotly.newPlot('mapChart', [{
+        type: 'choropleth',
+        locationmode: 'country names',
+        locations: mapData.map(d => d.country),
+        z: mapData.map(d => d.value),
+        colorscale: 'Blues',
+        colorbar: { title: selectedField }
+      }], {
+        geo: { projection: { type: 'natural earth' } }
+      });
+    }
+  </script>
+</body>
+</html>
