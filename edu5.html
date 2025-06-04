@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>教育支出可视化仪表盘</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #f0f4f8, #ffffff);
+        color: #1f2937;
+      }
+      header {
+        background: #1f2937;
+        color: #fff;
+        padding: 2rem 1rem;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+      .container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      .upload-section {
+        margin-bottom: 2.5rem;
+        display: flex;
+        justify-content: center;
+      }
+      input[type='file'] {
+        padding: 1rem 1.5rem;
+        border: 2px dashed #3b82f6;
+        border-radius: 0.75rem;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      input[type='file']:hover {
+        background: #dbeafe;
+      }
+      .chart {
+        margin-bottom: 3.5rem;
+        background: #ffffff;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .chart:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+      }
+      .chart-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 1.25rem;
+        border-left: 5px solid #3b82f6;
+        padding-left: 1rem;
+        color: #1e40af;
+        letter-spacing: 0.02em;
+      }
+    </style>
+  </head>
+  <body>
+    <header>教育支出可视化仪表盘</header>
+    <div class="container">
+      <div class="upload-section">
+        <input type="file" id="fileInput" accept="application/json" />
+      </div>
+      <div class="chart">
+        <div class="chart-title">1. 政府教育支出时间趋势（折线图）</div>
+        <div id="lineChart"></div>
+      </div>
+      <div class="chart">
+        <div class="chart-title">2. 国家教育支出地理分布（Choropleth）</div>
+        <div id="mapChart"></div>
+      </div>
+      <div class="chart">
+        <div class="chart-title">3. 单年支出比较（柱状图）</div>
+        <div id="barChart"></div>
+      </div>
+      <div class="chart">
+        <div class="chart-title">4. 国家年度分布热力图</div>
+        <div id="heatmap"></div>
+      </div>
+      <div class="chart">
+        <div class="chart-title">5. 国家对比雷达图</div>
+        <div id="radarChart"></div>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById('fileInput').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            const jsonData = JSON.parse(e.target.result);
+            renderDashboard(jsonData);
+          } catch (err) {
+            alert('JSON 解析失败，请检查文件格式');
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      function renderDashboard(data) {
+        const years = ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022"];
+        const countries = data.slice(1).map(d => d["Time period"]);
+
+        const lineTraces = data.slice(1).map(row => ({
+          x: years,
+          y: years.map(y => parseFloat((row[y] + '').replace(/[^\d.]/g, '')) || null),
+          mode: 'lines+markers',
+          name: row["Time period"]
+        }));
+        Plotly.newPlot('lineChart', lineTraces, {
+          margin: { t: 20 },
+          legend: { orientation: 'h' },
+          responsive: true
+        });
+
+        const year = "2020";
+        const mapData = data.slice(1).map(d => ({
+          country: d["Time period"],
+          value: parseFloat((d[year] + '').replace(/[^\d.]/g, '')) || null
+        })).filter(d => d.value !== null);
+
+        Plotly.newPlot('mapChart', [{
+          type: 'choropleth',
+          locationmode: 'country names',
+          locations: mapData.map(d => d.country),
+          z: mapData.map(d => d.value),
+          colorscale: 'YlGnBu',
+          colorbar: { title: `支出比重 (${year})` }
+        }], {
+          geo: { projection: { type: 'natural earth' } },
+          margin: { t: 10 },
+          responsive: true
+        });
+
+        Plotly.newPlot('barChart', [{
+          x: mapData.map(d => d.country),
+          y: mapData.map(d => d.value),
+          type: 'bar',
+          marker: { color: '#3b82f6' }
+        }], {
+          title: `各国政府教育支出（${year}）`,
+          margin: { t: 40 },
+          responsive: true
+        });
+
+        const zMatrix = data.slice(1).map(row => years.map(y => parseFloat((row[y] + '').replace(/[^\d.]/g, '')) || null));
+        Plotly.newPlot('heatmap', [{
+          z: zMatrix,
+          x: years,
+          y: countries,
+          type: 'heatmap',
+          colorscale: 'Viridis'
+        }], {
+          margin: { t: 20 },
+          responsive: true
+        });
+
+        const radarCountries = data.slice(1, 4);
+        const radarTraces = radarCountries.map(row => {
+          const values = years.map(y => parseFloat((row[y] + '').replace(/[^\d.]/g, '')) || 0);
+          values.push(values[0]);
+          return {
+            type: 'scatterpolar',
+            r: values,
+            theta: [...years, years[0]],
+            fill: 'toself',
+            name: row["Time period"]
+          };
+        });
+        Plotly.newPlot('radarChart', radarTraces, {
+          polar: { radialaxis: { visible: true } },
+          margin: { t: 20 },
+          responsive: true
+        });
+      }
+    </script>
+  </body>
+</html>
