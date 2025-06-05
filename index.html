@@ -1,58 +1,165 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中文词云生成器</title>
+    <title>教育投入与职业未来：数据洞察下的核心趋势与个人发展策略</title>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-slate-900 to-slate-800 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 font-[system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji','PingFang SC','Microsoft YaHei']">
+<body class="bg-slate-50 text-slate-700 font-sans">
 
-    <main class="bg-slate-800 bg-opacity-70 backdrop-blur-md shadow-2xl rounded-xl p-6 md:p-10 w-full max-w-4xl transition-all duration-500 ease-in-out">
-        <header class="mb-8 text-center">
-            <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-300">中文词云生成器</h1>
-            <p class="text-slate-400 mt-2">上传您的词频CSV文件，或使用默认数据生成词云图。</p>
-        </header>
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#intro" class="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">教育与未来</a>
+            <div class="space-x-4">
+                <a href="#intro" class="text-slate-600 hover:text-blue-600 transition-colors">引言</a>
+                <a href="#wordcloud" class="text-slate-600 hover:text-blue-600 transition-colors">就业趋势</a>
+                <a href="#dashboard" class="text-slate-600 hover:text-blue-600 transition-colors">教育投入</a>
+                <a href="#conclusion" class="text-slate-600 hover:text-blue-600 transition-colors">结论与策略</a>
+            </div>
+        </div>
+    </nav>
 
-        <section class="controls-section grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-end">
-            <div>
-                <label for="csvFileInput" class="block text-sm font-medium text-slate-300 mb-1">上传CSV文件 (word,count)</label>
-                <div class="relative">
-                    <input type="file" id="csvFileInput" accept=".csv" class="hidden">
-                    <label for="csvFileInput" class="file-input-label group">
-                        <i data-lucide="upload-cloud" class="w-5 h-5 mr-2 text-sky-400 group-hover:text-sky-300 transition-colors"></i>
-                        <span id="fileName" class="text-slate-400 group-hover:text-slate-200 transition-colors">选择文件...</span>
-                    </label>
+    <!-- Main Content -->
+    <main>
+        <!-- Introduction Section -->
+        <section id="intro" class="py-16 md:py-24 bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">教育投入与职业未来</h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-blue-100">数据洞察下的核心趋势与个人发展策略</p>
+                <p class="text-lg mb-6 max-w-2xl mx-auto text-blue-200">
+                    在快速变革的时代，未来的职业发展充满未知与挑战。本页融合数据视角，探讨教育投入与就业市场趋势的深层联系，旨在为您提供关于个人职业规划与发展的深度洞察。我们将一同解读就业市场词云图，探索政府教育支出数据，希望能启发您对未来职业路径的思考。
+                </p>
+                 <a href="#wordcloud" class="bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg hover:bg-blue-50 transition-all transform hover:scale-105 inline-flex items-center">
+                    探索核心趋势 <i data-lucide="arrow-down-circle" class="ml-2 w-5 h-5"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Word Cloud Section -->
+        <section id="wordcloud" class="py-16 md:py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 text-center mb-4">未来就业风向标：词云图解密</h2>
+                <p class="text-lg text-slate-600 mb-12 text-center max-w-3xl mx-auto">
+                    基于对《36氪进不去职场全怪我不努力吗？专业数据告诉你未来就业的三大核心趋势》视频内容的分析，以下词云图直观展示了未来就业市场的热点方向和关键技能。
+                </p>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-xl mb-10 flex flex-col lg:flex-row items-center lg:items-start gap-8">
+                    <div class="lg:w-1/2 flex justify-center">
+                        <img src="https://r2.flowith.net/files/o/1749136018740-employment_future_keyword_cloud_index_0@1536x1024.png" alt="未来就业趋势词云图" class="rounded-lg shadow-md max-w-full h-auto lg:max-w-md">
+                    </div>
+                    <div class="lg:w-1/2 prose max-w-none prose-slate">
+                        <h3 class="text-2xl font-semibold text-slate-700 mb-4">词云深度解读：</h3>
+                        <p>词云图清晰地揭示了AI技术对就业市场的深远影响，以及未来就业的几大核心趋势：</p>
+                        <ul>
+                            <li><strong>技术驱动与数字化转型：</strong>“技术”、“AI”、“数据”、“算法”等词汇的突出显示，强调了数字技能和技术素养在未来职场的核心地位。各行各业都在经历数字化转型，对掌握相关技能的人才需求旺盛。</li>
+                            <li><strong>新兴行业与交叉领域：</strong>词云中可能隐含的新兴行业（如人工智能、大数据、新能源等）和交叉学科（如计算社会科学、生物信息学）的重要性日益凸显，这些领域往往是高薪和高成长性的代表。</li>
+                            <li><strong>能力重塑与终身学习：</strong>“学习”、“技能”、“能力”、“发展”等词汇表明，未来就业市场更看重个体的适应能力、学习能力和解决复杂问题的能力。持续学习、技能迭代是应对职业不确定性的关键。</li>
+                            <li><strong>文理科就业新观察：</strong>传统观念里的文科“就业难”和理科“更吃香”可能需要重新审视。虽然技术岗位的需求明确，但具备良好沟通、批判性思维、创造力等人文素养的人才，在人机协作、产品设计、伦理法规等领域同样不可或缺。关键在于结合时代需求，找到自身学科优势与市场需求的结合点。</li>
+                        </ul>
+                        <p>这份词云不仅是对当前趋势的快照，更是对求职者和在职者的重要提示：关注行业动态，持续提升核心竞争力，才能在未来的就业市场中占据主动。</p>
+                    </div>
                 </div>
             </div>
-            
-            <div>
-                <label for="maxWordsInput" class="block text-sm font-medium text-slate-300 mb-1">最大词数</label>
-                <input type="number" id="maxWordsInput" value="150" min="10" max="1000" class="control-input">
+        </section>
+
+        <!-- Transition Text 1 -->
+        <section class="py-10 bg-slate-100">
+            <div class="container mx-auto px-6 text-center">
+                <p class="text-lg md:text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
+                    洞悉了未来的就业风向，我们不禁要问：面对这些快速变化的职业图景和新兴的技能需求，社会层面的基础投入，特别是政府在教育领域的支出，是如何布局和响应的？这些投入又在多大程度上影响着教育体系为未来劳动力市场输送人才的能力？接下来，我们将通过交互式教育支出仪表盘来一探究竟。
+                </p>
             </div>
-
-            <button id="generateButton" class="action-button col-span-1 md:col-span-1 bg-sky-500 hover:bg-sky-600 focus:ring-sky-400">
-                <i data-lucide="image" class="w-5 h-5 mr-2"></i>
-                生成词云
-            </button>
-        </section>
-        
-        <section id="wordCloudError" class="mb-4 p-3 bg-red-500/20 text-red-300 rounded-md hidden">
-            <p id="errorMessage"></p>
         </section>
 
-        <section class="wordcloud-container bg-slate-900/50 p-2 rounded-lg shadow-inner min-h-[300px] md:min-h-[500px] flex items-center justify-center">
-            <canvas id="wordCloudCanvas" class="w-full h-full"></canvas>
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="py-16 md:py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 text-center mb-4">数据说话：政府教育支出的全景视图</h2>
+                 <p class="text-lg text-slate-600 mb-12 text-center max-w-3xl mx-auto">
+                    下方仪表盘展示了部分国家政府教育支出占总服务支出的比重。您可以观察不同国家/地区教育投入的时间趋势、地理分布、单年支出对比等。这些数据帮助我们理解教育投入的规模、结构和变化，为思考教育与职业发展的关联提供宏观背景。
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-xl chart-container">
+                        <h3 class="chart-title-custom">1. 政府教育支出时间趋势 (折线图)</h3>
+                        <div id="lineChart" class="chart-content"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-xl chart-container">
+                        <h3 class="chart-title-custom">2. 国家教育支出地理分布 (Choropleth, 2020)</h3>
+                        <div id="mapChart" class="chart-content"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-xl chart-container">
+                        <h3 class="chart-title-custom">3. 单年支出比较 (柱状图, 2020)</h3>
+                        <div id="barChart" class="chart-content"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-xl chart-container">
+                        <h3 class="chart-title-custom">4. 国家年度分布热力图</h3>
+                        <div id="heatmap" class="chart-content"></div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-xl chart-container">
+                     <h3 class="chart-title-custom">5. 部分国家教育支出对比 (雷达图)</h3>
+                     <div id="radarChart" class="chart-content"></div>
+                </div>
+            </div>
         </section>
 
-        <footer class="mt-8 text-center">
-            <p class="text-xs text-slate-500">Neo's Word Cloud Generator &copy; <span id="currentYear"></span></p>
-        </footer>
+        <!-- Transition Text 2 -->
+        <section class="py-10 bg-slate-100">
+            <div class="container mx-auto px-6 text-center">
+                 <p class="text-lg md:text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
+                    眼前这个详尽的政府教育支出仪表盘，以数据化的方式呈现了教育投入的多维度信息。现在，请将仪表盘中的数据与我们之前看到的就业趋势词云结合起来思考：教育投入的重点是否正向着未来就业市场的需求倾斜？现有的教育资源配置，能否有效培养出未来社会所需的核心人才？
+                </p>
+            </div>
+        </section>
+
+        <!-- Conclusion Section -->
+        <section id="conclusion" class="py-16 md:py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 text-center mb-4">连接未来：教育投入如何赋能职业发展？</h2>
+                <p class="text-lg text-slate-600 mb-12 text-center max-w-3xl mx-auto">
+                    综合词云图揭示的就业趋势与教育支出仪表盘的数据，我们可以进行更深层次的思考，并制定个人化的职业发展策略。
+                </p>
+                <div class="bg-white p-8 md:p-10 rounded-xl shadow-xl prose max-w-none prose-slate">
+                    <h3 class="text-2xl font-semibold text-slate-700 mb-4">综合讨论与个人发展策略：</h3>
+                    <p>数据的交叉验证为我们提供了宝贵的洞察。一方面，就业市场对技术、创新和适应能力的需求日益增长；另一方面，政府教育支出反映了国家层面对人才培养的投入方向和力度。我们可以观察到：</p>
+                    <ul>
+                        <li><strong>趋势吻合与潜在差距：</strong>部分国家在高等教育和科研领域的持续投入，可能与技术密集型产业的人才需求相吻合。但教育体系的改革速度与市场需求的瞬息万变之间，可能存在滞后和差距。</li>
+                        <li><strong>数据驱动的个人决策：</strong>
+                            <ul>
+                                <li><strong>主动学习与技能升级：</strong>紧跟词云图揭示的热门技能（如AI、大数据分析、编程等），通过在线课程、职业培训等方式主动学习，弥补现有技能短板。</li>
+                                <li><strong>关注教育政策与资源：</strong>了解国家和地方的教育发展规划、重点扶持学科（可从教育支出结构中寻找线索），选择与未来趋势相关的专业或深造方向。</li>
+                                <li><strong>培养软技能与综合素养：</strong>除了硬技能，批判性思维、沟通协作、情绪智能、创新能力等软技能同样重要，这些是机器难以替代的。</li>
+                                <li><strong>跨学科视野：</strong>鼓励探索交叉学科，培养复合型能力，以适应未来更多元化的职业需求。</li>
+                                <li><strong>灵活应变与职业规划：</strong>认识到职业生涯的非线性发展，保持开放心态，定期评估和调整职业规划，勇于尝试新领域。</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>最终结论：</strong>教育投入为社会发展奠定基础，而就业市场的趋势则指明了能力需求的方向。在数据驱动的认知下，个人唯有将宏观的教育资源与微观的职业洞察相结合，持续学习，主动适应，才能在充满变化的未来职业生涯中抓住机遇，实现可持续发展。</p>
+                    <div class="mt-8 p-6 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
+                        <p class="text-blue-700 font-semibold"><i data-lucide="lightbulb" class="inline-block mr-2 w-5 h-5"></i>核心启示：</p>
+                        <p class="text-blue-600">面对不确定的未来，最大的确定性在于持续投资自我，提升适应变化的能力。让数据成为您的向导，积极规划并塑造您的职业未来。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <script type="module" src="script.js"></script>
+    <!-- Footer -->
+    <footer class="py-8 bg-slate-800 text-slate-300 text-center">
+        <div class="container mx-auto px-6">
+            <p>&copy; <span id="currentYear"></span> 教育与未来洞察. 保留所有权利.</p>
+            <p class="text-sm mt-1">数据可视化与分析，助您洞见职业发展新机遇。</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
