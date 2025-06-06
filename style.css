@@ -1,0 +1,92 @@
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.file-input-label {
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 1rem; /* 10px 16px */
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem; /* 8px */
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    width: 100%;
+}
+
+.file-input-label:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.control-input {
+    width: 100%;
+    padding: 0.625rem 1rem; /* 10px 16px */
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem; /* 8px */
+    color: #e2e8f0; /* slate-200 */
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    appearance: textfield; /* For number input spinners hiding */
+}
+
+.control-input:focus {
+    outline: none;
+    border-color: #38bdf8; /* sky-400 */
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3); /* sky-400 with opacity */
+}
+
+/* Hide spinners on number input for Chrome, Safari, Edge, Opera */
+.control-input::-webkit-outer-spin-button,
+.control-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide spinners on number input for Firefox */
+.control-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.5rem; /* 10px 24px */
+    border-radius: 0.5rem; /* 8px */
+    font-weight: 500; /* medium */
+    color: white;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+}
+
+.action-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--tw-ring-color-rgb, 56, 189, 248), 0.4);
+}
+.action-button:active {
+    transform: translateY(1px);
+}
+
+.wordcloud-container {
+    width: 100%;
+    aspect-ratio: 16 / 10; /* Maintain aspect ratio, adjust as needed */
+    max-height: 70vh;
+}
+
+#wordCloudCanvas {
+    max-width: 100%;
+    max-height: 100%;
+    display: block; /* Remove extra space below canvas */
+}
+
+#fileName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
